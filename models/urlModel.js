@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const urlSchema = new Schema({
-    short_url: {
+    short_code: {
         type: String,
         unique: true
     },

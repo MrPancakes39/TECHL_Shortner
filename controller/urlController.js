@@ -18,15 +18,13 @@ module.exports.createRedirect = async function (req, res) {
         .trim()
         .replace(/[^a-z0-9]/gi, "_");
         
-    const short_url = `${req.protocol}//${req.get("host")}/${safe_code}`;
-    
-    const redirect_in_db = await Redirect.findOne({ short_url });
+    const redirect_in_db = await Redirect.findOne({ short_code: safe_code });
     if (redirect_in_db) {
         return res.status(400).json({message: `Code ${safe_code} is already taken.`});
     }
     
     await Redirect.create({
-        short_url,
+        short_code: safe_code,
         destination_url: original_url
     }, (err) => err ? res.status(500).json({message: err.message }) : null);
 
