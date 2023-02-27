@@ -25,5 +25,5 @@ module.exports.createRedirect = function (req, res) {
         destination_url: original_url
     });
 
-    res.status(200);
+    return res.sendStatus(200);
 };

@@ -1,4 +1,5 @@
-const {Schema} = require("mongoose");
+const mongoose = require("mongoose");
+const { Schema } = mongoose;
 
 const urlSchema = new Schema({
     short_url: String,
