@@ -1,7 +1,7 @@
 const Redirect = require("../models/urlModel");
 const validator = require("validator");
 
-module.exports.createRedirect = function (req, res) {
+module.exports.createRedirect = async function (req, res) {
     if (!req.body.shortjson || !req.body.shortjson.code || !req.body.shortjson.original_url) {
         return res.status(400).json({message: "Request body is not in correct format."});
     }
@@ -20,10 +20,15 @@ module.exports.createRedirect = function (req, res) {
         
     const short_url = `${req.protocol}//${req.get("host")}/${safe_code}`;
     
-    Redirect.create({
+    const redirect_in_db = await Redirect.findOne({ short_url });
+    if (redirect_in_db) {
+        return res.status(400).json({message: `Code ${safe_code} is already taken.`});
+    }
+    
+    await Redirect.create({
         short_url,
         destination_url: original_url
-    });
+    }, (err) => err ? res.status(500).json({message: err.message }) : null);
 
     return res.sendStatus(200);
 };
