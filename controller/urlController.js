@@ -17,7 +17,7 @@ module.exports.createRedirect = async function (req, res) {
         .toString()
         .trim()
         .replace(/[^a-z0-9]/gi, "_");
-        
+
     const redirect_in_db = await Redirect.findOne({ short_code: safe_code });
     if (redirect_in_db) {
         return res.status(400).json({message: `Code ${safe_code} is already taken.`});
@@ -30,3 +30,13 @@ module.exports.createRedirect = async function (req, res) {
 
     return res.sendStatus(200);
 };
+
+module.exports.redirect = async function(req, res) {
+    const code = req.params.code.toString();
+    const redirect_in_db = await Redirect.findOne({ short_code: code });
+    if (!redirect_in_db) {
+        return res.status(400).json({message: `Code ${code} is not a valid code.`});
+    }
+    const {destination_url} = redirect_in_db;
+    return res.redirect(destination_url);
+}
