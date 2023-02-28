@@ -11,6 +11,7 @@ submit.addEventListener("click", async (event) => {
             original_url: urlElt.value,
         },
     };
+    const code = data.shortjson.code;
     const res = await fetch("/api/create", {
         method: "POST",
         body: JSON.stringify(data),
@@ -23,7 +24,7 @@ submit.addEventListener("click", async (event) => {
         result.innerHTML = `You can view it at <a href="${URL}" target="_blank">${URL}</a>`;
     } else {
         const msg = await res.json();
-        result.innerHTML = msg.message;
+        result.innerHTML = msg?.message ?? "Something went wrong";
         if (msg.message.includes("taken")) {
             result.innerHTML += `<br>View it here: <a href="${URL}" target="_blank">${URL}</a>`;
         }
