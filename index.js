@@ -13,10 +13,13 @@ mongoose.connect(process.env.MONGO_URL).then(() => console.log("MongoDB Connecte
 const express = require("express");
 const app = express();
 const redirect = require("./routers/redirect");
+const path = require("path");
 
 app.use(express.json());
 app.use("/api/", redirect);
-app.use(express.static("public"));
+app.use("/", express.static(path.join(__dirname, "public")));
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Listening on http://127.0.0.1:${PORT}.`));
+
+module.exports = app;
