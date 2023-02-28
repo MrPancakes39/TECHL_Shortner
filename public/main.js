@@ -5,12 +5,15 @@ const result = document.querySelector("#result");
 
 submit.addEventListener("click", async (event) => {
     event.preventDefault();
-    const code = codeElt.value;
-    const original_url = urlElt.value;
-    const body = `{"shortjson": { "code": "${code}", "original_url": "${original_url}" }}`;
+    const data = {
+        shortjson: {
+            code: codeElt.value,
+            original_url: urlElt.value,
+        },
+    };
     const res = await fetch("/api/create", {
         method: "POST",
-        body,
+        body: JSON.stringify(data),
         headers: {
             "Content-Type": "application/json",
         },
