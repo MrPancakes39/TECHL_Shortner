@@ -12,18 +12,17 @@ submit.addEventListener("click", async (event) => {
         method: "POST",
         body,
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
         },
     });
     const URL = `${location.href}api/redirect/${code}`;
-    if(res.ok) {
+    if (res.ok) {
         result.innerHTML = `You can view it at <a href="${URL}" target="_blank">${URL}</a>`;
     } else {
         const msg = await res.json();
         result.innerHTML = msg.message;
-        if(msg.message.includes("taken")) {
-            result.innerHTML += `<br>View it here: <a href="${URL}" target="_blank">${URL}</a>`
+        if (msg.message.includes("taken")) {
+            result.innerHTML += `<br>View it here: <a href="${URL}" target="_blank">${URL}</a>`;
         }
-
     }
-})
+});

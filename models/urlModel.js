@@ -4,9 +4,9 @@ const { Schema } = mongoose;
 const urlSchema = new Schema({
     short_code: {
         type: String,
-        unique: true
+        unique: true,
     },
-    destination_url: String
+    destination_url: String,
 });
 
-module.exports = mongoose.model('URL', urlSchema);
+module.exports = mongoose.model("URL", urlSchema);
