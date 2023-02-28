@@ -5,25 +5,28 @@ const result = document.querySelector("#result");
 
 submit.addEventListener("click", async (event) => {
     event.preventDefault();
-    const code = codeElt.value;
-    const original_url = urlElt.value;
-    const body = `{"shortjson": { "code": "${code}", "original_url": "${original_url}" }}`;
+    const data = {
+        shortjson: {
+            code: codeElt.value,
+            original_url: urlElt.value,
+        },
+    };
+    const code = data.shortjson.code;
     const res = await fetch("/api/create", {
         method: "POST",
-        body,
+        body: JSON.stringify(data),
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
         },
     });
     const URL = `${location.href}api/redirect/${code}`;
-    if(res.ok) {
+    if (res.ok) {
         result.innerHTML = `You can view it at <a href="${URL}" target="_blank">${URL}</a>`;
     } else {
         const msg = await res.json();
-        result.innerHTML = msg.message;
-        if(msg.message.includes("taken")) {
-            result.innerHTML += `<br>View it here: <a href="${URL}" target="_blank">${URL}</a>`
+        result.innerHTML = msg?.message ?? "Something went wrong";
+        if (msg.message.includes("taken")) {
+            result.innerHTML += `<br>View it here: <a href="${URL}" target="_blank">${URL}</a>`;
         }
-
     }
-})
+});
