@@ -10,7 +10,7 @@ module.exports.createRedirect = async function (req, res) {
 
     if (!validator.isURL(original_url)) {
         console.log(req.body);
-        return res.status(400).json({ messgae: "Request body didn't prove a URL." });
+        return res.status(400).json({ message: "Request body didn't prove a URL." });
     }
 
     const safe_code = code
