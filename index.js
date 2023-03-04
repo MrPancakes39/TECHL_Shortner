@@ -1,8 +1,13 @@
 // Setup enviroment variables
 require("dotenv").config();
 
-// Connect to database
+// All imports
 const mongoose = require("mongoose");
+const express = require("express");
+const path = require("path");
+const redirect = require("./routers/redirect");
+
+// Connect to database
 mongoose.set("strictQuery", false);
 mongoose
     .connect(process.env.MONGO_URL)
@@ -14,10 +19,7 @@ mongoose
     });
 
 // Create express app
-const express = require("express");
 const app = express();
-const redirect = require("./routers/redirect");
-const path = require("path");
 
 app.use(express.json());
 app.use("/api/", redirect);
