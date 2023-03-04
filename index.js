@@ -4,6 +4,7 @@ require("dotenv").config();
 // All imports
 const mongoose = require("mongoose");
 const express = require("express");
+const helmet = require("helmet");
 const path = require("path");
 const redirect = require("./routers/redirect");
 
@@ -24,6 +25,7 @@ const app = express();
 app.use(express.json()); // Middleware for parsing JSON requests.
 app.use("/api/", redirect); // Use redirect router on /api/ endpoint.
 app.use("/", express.static(path.join(__dirname, "public"))); // Middleware to serve the static webpage files.
+app.use(helmet()); // Helmet helps you secure your Express apps by setting various HTTP headers.
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Listening on http://127.0.0.1:${PORT}.`));
