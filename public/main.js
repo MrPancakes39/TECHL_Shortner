@@ -2,15 +2,17 @@ const codeElt = document.querySelector("#code");
 const urlElt = document.querySelector("#url");
 const submit = document.querySelector("#submit");
 const result = document.querySelector("#result");
+const use_custom = document.querySelector("#use_custom");
 
+use_custom.addEventListener("click", () => (codeElt.disabled = !use_custom.checked));
 submit.addEventListener("click", async (event) => {
     event.preventDefault();
     const code = codeElt.value;
     const original_url = urlElt.value;
 
     const data = {};
-    if (code) data["code"] = code;
-    if (original_url) data["original_url"] = original_url;
+    if (use_custom.checked) data["code"] = code;
+    data["original_url"] = original_url;
 
     const res = await fetch("/api/create", {
         method: "POST",
