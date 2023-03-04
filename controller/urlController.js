@@ -29,32 +29,33 @@ module.exports.createRedirect = async function (req, res) {
             errors[field] = errors[field] ?? [];
             errors[field] = [...errors[field], message];
         });
+        errors["type"] = "invalid-format";
         return res.status(400).send({ errors });
     }
-    console.log(result.data);
     const { code, original_url } = result.data;
 
-    // const redirect_in_db = await Redirect.findOne({ short_code: safe_code });
-    // if (redirect_in_db) {
-    //     return res.status(400).json({ message: `Code ${safe_code} is already taken.` });
-    // }
+    const redirect_in_db = await Redirect.findOne({ short_code: code });
+    if (redirect_in_db) {
+        const errors = { type: "message", message: `code ${code} is already taken.` };
+        return res.status(400).json({ errors });
+    }
 
-    // await Redirect.create(
-    //     {
-    //         short_code: safe_code,
-    //         destination_url: original_url,
-    //     },
-    //     (err) => (err ? res.status(500).json({ message: err.message }) : null)
-    // );
+    await Redirect.create({
+        short_code: code,
+        destination_url: original_url,
+    });
 
-    return res.sendStatus(200);
+    // vulnerable to error if endpoint changes.
+    const short_url = `${req.protocol}://${req.get("host")}/api/redirect/${code}`;
+    return res.json({ short_url });
 };
 
 module.exports.redirect = async function (req, res) {
     const code = req.params.code.toString();
     const redirect_in_db = await Redirect.findOne({ short_code: code });
     if (!redirect_in_db) {
-        return res.status(400).json({ message: `Code ${code} is not a valid code.` });
+        const errors = { type: "message", message: `code ${code} is not a valid code.` };
+        return res.status(400).json({ errors });
     }
     const { destination_url } = redirect_in_db;
     return res.redirect(destination_url);
