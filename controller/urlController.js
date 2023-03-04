@@ -3,21 +3,27 @@ const { z } = require("zod");
 
 const RequestSchema = z
     .object({
-        code: z.string().min(1, { message: "Code must contain at least 1 character." }),
+        code: z.string().min(1),
         original_url: z
             .string()
-            .url({ message: "Request body didn't prove a valid URL." })
+            .url()
             .refine((val) => val.startsWith("http"), {
-                message: "We only shortner http URLs.",
+                message: "We only shortner http URLs",
             }),
     })
-    .strict({ message: "Request body is not in correct format." });
+    .strict({ message: "Request body is not in correct format" });
 
 module.exports.createRedirect = async function (req, res) {
     const result = RequestSchema.safeParse(req.body);
     if (!result.success) {
-        const { message } = result.error.errors.slice(-1)[0];
-        return res.status(400).json({ message });
+        const errors = {};
+        result.error.errors.forEach((e) => {
+            const field = e.path[0];
+            const message = e.message;
+            errors[field] = errors[field] ?? [];
+            errors[field] = [...errors[field], message];
+        });
+        return res.status(400).send({ errors });
     }
     const { code, original_url } = result.data;
 
