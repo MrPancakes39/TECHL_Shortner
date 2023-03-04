@@ -21,9 +21,9 @@ mongoose
 // Create express app
 const app = express();
 
-app.use(express.json());
-app.use("/api/", redirect);
-app.use("/", express.static(path.join(__dirname, "public")));
+app.use(express.json()); // Middleware for parsing JSON requests.
+app.use("/api/", redirect); // Use redirect router on /api/ endpoint.
+app.use("/", express.static(path.join(__dirname, "public"))); // Middleware to serve the static webpage files.
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Listening on http://127.0.0.1:${PORT}.`));
