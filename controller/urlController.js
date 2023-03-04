@@ -1,17 +1,20 @@
 const Redirect = require("../models/urlModel");
-const validator = require("validator");
+const { z } = require("zod");
+
+const RequestSchema = z
+    .object({
+        code: z.string().min(1, { message: "Code must contain at least 1 character." }),
+        original_url: z.string().url({ message: "Request body didn't prove a valid URL." }),
+    })
+    .strict({ message: "Request body is not in correct format." });
 
 module.exports.createRedirect = async function (req, res) {
-    if (!req.body.shortjson || !req.body.shortjson.code || !req.body.shortjson.original_url) {
-        return res.status(400).json({ message: "Request body is not in correct format." });
+    const result = RequestSchema.safeParse(req.body);
+    if (!result.success) {
+        const { message } = result.error.errors.slice(-1)[0];
+        return res.status(400).json({ message });
     }
-
-    const { original_url, code } = req.body.shortjson;
-
-    if (!validator.isURL(original_url)) {
-        console.log(req.body);
-        return res.status(400).json({ message: "Request body didn't prove a URL." });
-    }
+    const { code, original_url } = result.data;
 
     const safe_code = code
         .toString()
