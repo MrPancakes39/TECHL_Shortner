@@ -31,13 +31,16 @@
 
 <body>
     <form id="shorten">
+        <label for="use_custom">
+            <input type="checkbox" id="use_custom"> Use custom code?
+        </label>
         <label for="code">Code: </label>
-        <input type="text" id="code">
+        <input type="text" id="code" disabled>
         <label for="url">URL: </label>
         <input type="text" id="url"><br>
         <button class="button-primary" id="submit">Submit</button>
     </form>
-    <p id="result"></p>
+    <pre id="result"></pre>
     <script src="./main.js"></script>
 </body>
 
