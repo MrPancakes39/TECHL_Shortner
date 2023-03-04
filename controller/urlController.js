@@ -4,7 +4,12 @@ const { z } = require("zod");
 const RequestSchema = z
     .object({
         code: z.string().min(1, { message: "Code must contain at least 1 character." }),
-        original_url: z.string().url({ message: "Request body didn't prove a valid URL." }),
+        original_url: z
+            .string()
+            .url({ message: "Request body didn't prove a valid URL." })
+            .refine((val) => val.startsWith("http"), {
+                message: "We only shortner http URLs.",
+            }),
     })
     .strict({ message: "Request body is not in correct format." });
 
