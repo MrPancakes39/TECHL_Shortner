@@ -7,7 +7,9 @@ const RequestSchema = z
         code: z
             .string()
             .min(1)
-            .default(() => nanoid(12)),
+            .default(() => nanoid(12))
+            // replaces any non-alphanumeric characters with "_" to be URL safe.
+            .transform((val) => val.trim().replace(/[^a-z0-9]/gi, "_")),
         original_url: z
             .string()
             .url()
@@ -31,11 +33,6 @@ module.exports.createRedirect = async function (req, res) {
     }
     console.log(result.data);
     const { code, original_url } = result.data;
-
-    // const safe_code = code
-    //     .toString()
-    //     .trim()
-    //     .replace(/[^a-z0-9]/gi, "_");
 
     // const redirect_in_db = await Redirect.findOne({ short_code: safe_code });
     // if (redirect_in_db) {
